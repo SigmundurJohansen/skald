@@ -1,0 +1,29 @@
+/usr/include/c++/13/new:174:33:void* operator new(std::size_t, void*)	16	static
+/usr/include/c++/13/bits/std_function.h:85:17:void* std::_Any_data::_M_access()	16	static
+/usr/include/c++/13/bits/std_function.h:86:17:const void* std::_Any_data::_M_access() const	16	static
+/usr/include/c++/13/bits/std_function.h:241:5:std::_Function_base::~_Function_base()	32	static
+main.cpp:3:6:void my_count()	16	static
+/usr/include/c++/13/bits/std_function.h:334:11:std::function<void()>::~function()	32	static
+main.cpp:11:5:int main()	64	static
+/usr/include/c++/13/bits/std_function.h:239:5:constexpr std::_Function_base::_Function_base()	16	static
+/usr/include/c++/13/bits/std_function.h:435:2:)>::function(_Functor&&) [with _Functor = void (&)(); _Constraints = void; _Res = void; _ArgTypes = {}]	32	static
+/usr/include/c++/13/bits/std_function.h:225:4:static bool std::_Function_base::_Base_manager<_Functor>::_M_not_empty_function(_Tp*) [with _Tp = void(); _Functor = void (*)()]	16	static
+/usr/include/c++/13/bits/move.h:70:5:constexpr _Tp&& std::forward(typename remove_reference<_Functor>::type&) [with _Tp = void (&)()]	16	static
+/usr/include/c++/13/bits/std_function.h:211:4:static void std::_Function_base::_Base_manager<_Functor>::_M_init_functor(std::_Any_data&, _Fn&&) [with _Fn = void (&)(); _Functor = void (*)()]	32	static
+/usr/include/c++/13/bits/std_function.h:288:7:) [with _Res = void; _Functor = void (*)(); _ArgTypes = {}]	32	static
+/usr/include/c++/13/bits/std_function.h:267:7:), _Functor>::_M_manager(std::_Any_data&, const std::_Any_data&, std::_Manager_operation) [with _Res = void; _Functor = void (*)(); _ArgTypes = {}]	64	static
+/usr/include/c++/13/bits/std_function.h:150:4:static void std::_Function_base::_Base_manager<_Functor>::_M_create(std::_Any_data&, _Fn&&, std::true_type) [with _Fn = void (&)(); _Functor = void (*)()]	48	static
+/usr/include/c++/13/bits/std_function.h:134:2:static _Functor* std::_Function_base::_Base_manager<_Functor>::_M_get_pointer(const std::_Any_data&) [with _Functor = void (*)()]	48	static
+/usr/include/c++/13/bits/invoke.h:104:5:) [with _Res = void; _Callable = void (*&)(); _Args = {}]	32	static
+/usr/include/c++/13/bits/std_function.h:90:7:_Tp& std::_Any_data::_M_access() [with _Tp = const std::type_info*]	32	static
+/usr/include/c++/13/bits/std_function.h:90:7:_Tp& std::_Any_data::_M_access() [with _Tp = void (**)()]	32	static
+/usr/include/c++/13/bits/std_function.h:180:2:static bool std::_Function_base::_Base_manager<_Functor>::_M_manager(std::_Any_data&, const std::_Any_data&, std::_Manager_operation) [with _Functor = void (*)()]	64	static
+/usr/include/c++/13/bits/std_function.h:95:7:const _Tp& std::_Any_data::_M_access() const [with _Tp = void (*)()]	32	static
+/usr/include/c++/13/bits/move.h:51:5:constexpr _Tp* std::__addressof(_Tp&) [with _Tp = void (* const)()]	16	static
+/usr/include/c++/13/bits/move.h:70:5:constexpr _Tp&& std::forward(typename remove_reference<_Functor>::type&) [with _Tp = void (*&)()]	16	static
+/usr/include/c++/13/bits/invoke.h:60:5:) [with _Res = void; _Fn = void (*&)(); _Args = {}]	32	static
+/usr/include/c++/13/bits/std_function.h:211:4:static void std::_Function_base::_Base_manager<_Functor>::_M_init_functor(std::_Any_data&, _Fn&&) [with _Fn = void (* const&)(); _Functor = void (*)()]	32	static
+/usr/include/c++/13/bits/std_function.h:166:2:static void std::_Function_base::_Base_manager<_Functor>::_M_destroy(std::_Any_data&, std::true_type) [with _Functor = void (*)()]	32	static
+/usr/include/c++/13/bits/move.h:70:5:constexpr _Tp&& std::forward(typename remove_reference<_Functor>::type&) [with _Tp = void (* const&)()]	16	static
+/usr/include/c++/13/bits/std_function.h:150:4:static void std::_Function_base::_Base_manager<_Functor>::_M_create(std::_Any_data&, _Fn&&, std::true_type) [with _Fn = void (* const&)(); _Functor = void (*)()]	48	static
+/usr/include/c++/13/bits/std_function.h:90:7:_Tp& std::_Any_data::_M_access() [with _Tp = void (*)()]	32	static
