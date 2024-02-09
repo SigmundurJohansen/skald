@@ -11,11 +11,11 @@ void generate_makefile(make_settings &settings, project &project) {
   // Check if the file is open
   if (makefile.is_open()) {
     // Write the Makefile content
-    makefile << "CC := g++\n";
+    makefile << "CC := " + settings.compiler + "\n\n";
     makefile << "CFLAGS :=";
     for (auto flag : settings.compiler_flags)
       makefile << flag;
-    makefile << "\n";
+    makefile << "\n\n";
     makefile << "all: " << targetName << "\n";
     makefile << "\n";
     makefile << targetName << ": " << sourceFile;
