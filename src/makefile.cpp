@@ -13,7 +13,7 @@ void generate_makefile(make_settings &settings, project &project) {
       makefile << flag;
     makefile << "\n\n";
 
-    makefile << "TARGET=" << project.project_name << "\n\n";
+    makefile << "TARGET=$(BUILDDIR)/" << project.project_name << "\n\n";
 
     makefile << "SRCDIR:=";
     for (auto folder : project.folders)
@@ -36,6 +36,7 @@ void generate_makefile(make_settings &settings, project &project) {
     makefile << "all: $(TARGET)\n\n";
 
     makefile << "$(TARGET):$(OBJS)\n";
+    makefile << "\t$(BUILDDIR)\n";
     makefile << "\t$(CXX) $(CXXFLAGS) -o $@ $^\n\n";
 
     makefile << "$(BUILDDIR)/"
@@ -47,7 +48,7 @@ void generate_makefile(make_settings &settings, project &project) {
     makefile << "\t$(CXX) $(CXXFLAGS) -c $< -o $@\n\n";
 
     makefile << "clean:\n";
-    makefile << "\trmdir /s /q $(BUILDDIR).exe\n";
+    makefile << "\trmdir /s /q $(BUILDDIR)\n";
 
     // Close the file
     makefile.close();
