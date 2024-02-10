@@ -3,10 +3,11 @@
 #include "src/makefile.h"
 #include <iostream>
 
-
 int main() {
   make_settings make_settings;
   project project;
+
+  project.project_folder = std::filesystem::current_path().string();
 
   // getting and listing all files needed
   get_project_files(project);
@@ -20,7 +21,12 @@ int main() {
     if (str == "makefile")
       std::cout << "makefile found" << std::endl;
   }
-
+  // change folder full path to relative path
+  for (auto &relative : project.folders) {
+    std::cout << relative << std::endl;
+    relative = relative.substr(project.project_folder.size() + 1);
+    std::cout << relative << std::endl;
+  }
   std::cout << "Listing cpp files: " << std::endl;
   for (auto str : project.cpp_files) {
     std::cout << str << std::endl;

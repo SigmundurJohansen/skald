@@ -1,9 +1,6 @@
 #include "makefile.h"
 
 void generate_makefile(make_settings &settings, project &project) {
-  // Specify the source file and target executable name
-  std::string targetName = "myexecutable";
-
   // Open a file for writing (or create if it doesn't exist)
   std::ofstream makefile("Makefile");
 
@@ -11,18 +8,12 @@ void generate_makefile(make_settings &settings, project &project) {
   if (makefile.is_open()) {
     // Write the Makefile content
     makefile << "CXX:= " + settings.compiler + "\n\n";
-
     makefile << "CXXFLAGS:=";
     for (auto flag : settings.compiler_flags)
       makefile << flag;
     makefile << "\n\n";
 
     makefile << "TARGET=" << project.project_name << "\n\n";
-
-    /*
-    SRCDIR := src
-    BUILDDIR := build
-    */
 
     makefile << "SRCDIR:=";
     for (auto folder : project.folders)

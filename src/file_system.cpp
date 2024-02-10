@@ -1,5 +1,4 @@
 #include "file_system.h"
-#include <filesystem>
 #include <iostream>
 
 std::vector<std::string> exempt_folders = {".git", "build", ".vscode"};
@@ -28,12 +27,12 @@ void get_project_files(project &project) {
 }
 
 // Function to replace all backslashes with forward slashes in a string
-void replaceBackslashWithForwardSlash(std::string& str) {
-    for (auto& ch : str) {
-        if (ch == '\\') {
-            ch = '/';
-        }
+void replaceBackslashWithForwardSlash(std::string &str) {
+  for (auto &ch : str) {
+    if (ch == '\\') {
+      ch = '/';
     }
+  }
 }
 
 void add_cpp_files(std::vector<std::string> &files, std::string path) {
@@ -70,8 +69,9 @@ void add_folders(std::vector<std::string> &folders, std::string path) {
       if (contains(exempt_folders, temp)) {
       } else {
         std::cout << "Added new folder: " << temp << std::endl;
-        folders.emplace_back(temp);
-        add_folders(folders, temp);
+        std::string full_path = entry.path().string();
+        folders.emplace_back(full_path);
+        add_folders(folders, full_path);
       }
     }
   }
