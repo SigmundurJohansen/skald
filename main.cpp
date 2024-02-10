@@ -1,5 +1,6 @@
 #include "src/def.h"
 #include "src/file_system.h"
+#include "src/json_reader.h"
 #include "src/makefile.h"
 #include <iostream>
 
@@ -11,13 +12,15 @@ int main() {
 
   // getting and listing all files needed
   get_project_files(project);
-  get_cpp_files(project);
+  get_source_files(project);
 
   std::cout << "Listing project files: " << std::endl;
   for (auto str : project.project_files) {
     std::cout << str << std::endl;
-    if (str == "settings.json")
+    if (str == "settings.json") {
       std::cout << "project settings file found" << std::endl;
+      get_settings(project);
+    }
     if (str == "makefile")
       std::cout << "makefile found" << std::endl;
   }
@@ -27,8 +30,19 @@ int main() {
     relative = relative.substr(project.project_folder.size() + 1);
     std::cout << relative << std::endl;
   }
-  std::cout << "Listing cpp files: " << std::endl;
+
+  for (auto &file : project.cpp_files) {
+    file = file.substr(project.project_folder.size() + 1);
+  }
+  for (auto &file : project.c_files) {
+    file = file.substr(project.project_folder.size() + 1);
+  }
+
+  std::cout << "Listing source files: " << std::endl;
   for (auto str : project.cpp_files) {
+    std::cout << str << std::endl;
+  }
+  for (auto str : project.c_files) {
     std::cout << str << std::endl;
   }
 
@@ -44,18 +58,10 @@ int main() {
   for (auto &f : project.folders)
     std::cout << f << std::endl;
 
-  /*
-  time_function(count);
-  std::filesystem::path currentPath = std::filesystem::current_path();
-  std::filesystem::path executablePath =
-      std::filesystem::canonical("/proc/self/exe");
-*/
-
   // get dependencies from dependency.json
   // locate and manage dependencies using vcpkg
 
   // get settings from settings.json
-  // generate a makefile using cpp files and flags from settings.
   // run make file using -j 8
 
   return 0;
