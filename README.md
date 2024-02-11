@@ -3,7 +3,7 @@
 ### How to build
 
  ```
-g++ --std=c++17 -o skald main.cpp src/file_system.cpp src/makefile.cpp external/yyjson.c 
+g++ --std=c++17 -o skald main.cpp src/file_system.cpp src/makefile.cpp external/yyjson.c src/json_reader.cpp
  ```
 
 only works on windows at the moment
