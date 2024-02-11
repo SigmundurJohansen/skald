@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <iostream>
 
-int get_settings(project &project) {
+int get_settings(project &project, make_settings &make_settings) {
   // read file
   FILE *file = fopen("settings.json", "rb");
   if (!file) {
@@ -38,6 +38,18 @@ int get_settings(project &project) {
   } else {
     std::cout << "The key 'project_name' does not exist.\n";
   }
+  // Access the "debug" value
+  yyjson_val *debug_val = yyjson_obj_get(root, "debug");
+  if (debug_val) {
+    make_settings.compiler_flags.emplace_back("-g");
+  } else {
+    std::cout << "The key 'debug' does not exist.\n";
+  }
+
+  make_settings.compiler_flags.emplace_back(" -Wall");
+  make_settings.compiler_flags.emplace_back(" -Wextra");
+  make_settings.compiler_flags.emplace_back(" -std=c++17");
+  make_settings.compiler_flags.emplace_back(" -fstack-usage");
 
   // Clean up
   yyjson_doc_free(settings_file);

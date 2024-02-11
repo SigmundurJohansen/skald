@@ -24,7 +24,7 @@ int main() {
   for (auto str : project.project_files) {
     if (str == "settings.json") {
       std::cout << "\tsettings.json\n";
-      ret = get_settings(project);
+      ret = get_settings(project, make_settings);
     }
     if (str == "dependencies.json")
       std::cout << "\tdependencies.json\n";
@@ -59,11 +59,6 @@ int main() {
     }
   }
 
-  make_settings.compiler_flags.emplace_back(" -g");
-  make_settings.compiler_flags.emplace_back(" -Wall");
-  make_settings.compiler_flags.emplace_back(" -Wextra");
-  make_settings.compiler_flags.emplace_back(" -std=c++17");
-  make_settings.compiler_flags.emplace_back(" -fstack-usage");
 
   std::cout << "----------------------\n";
   std::cout << "Entries in folders: \n";
