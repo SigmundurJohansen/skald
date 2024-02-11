@@ -5,14 +5,11 @@
 
 int get_settings(project &project) {
   // read file
-  std::cout << "fopen\n";
   FILE *file = fopen("settings.json", "rb");
   if (!file) {
     std::cout << "Could not Open the file.\n";
     return EXIT_FAILURE;
   }
-  std::cout << "fopen good\n";
-
 
   fseek(file, 0, SEEK_END);
   long len = ftell(file);
