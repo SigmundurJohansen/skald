@@ -4,3 +4,4 @@
 #include <string>
 
 int get_settings(project &project);
+int get_dependencies(project &project);

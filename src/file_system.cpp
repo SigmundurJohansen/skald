@@ -22,12 +22,12 @@ void get_project_files(project &project) {
       }
     }
   } catch (const std::filesystem::filesystem_error &e) {
-    std::cout << "Filesystem error: getting project files" << std::endl;
+    std::cout << "Filesystem error: getting project files" << "\n";
   }
 }
 
 // Function to replace all backslashes with forward slashes in a string
-void replaceBackslashWithForwardSlash(std::string &str) {
+void replace_backslash_with_forward_slash(std::string &str) {
   for (auto &ch : str) {
     if (ch == '\\') {
       ch = '/';
@@ -41,14 +41,13 @@ void add_cpp_files(std::vector<std::string> &files, std::string path) {
       if (entry.is_regular_file()) {
         if (entry.path().extension() == ".cpp") {
           std::string temp = entry.path().string();
-          replaceBackslashWithForwardSlash(temp);
+          replace_backslash_with_forward_slash(temp);
           files.emplace_back(temp);
-          std::cout << "Added file: " << temp << std::endl;
         }
       }
     }
   } catch (const std::filesystem::filesystem_error &e) {
-    std::cout << "filesystem error, getting files" << std::endl;
+    std::cout << "Filesystem error, getting files" << "\n";
   }
 }
 
@@ -58,14 +57,13 @@ void add_c_files(std::vector<std::string> &files, std::string path) {
       if (entry.is_regular_file()) {
         if (entry.path().extension() == ".c" && entry.path().extension() != ".cpp") {
           std::string temp = entry.path().string();
-          replaceBackslashWithForwardSlash(temp);
+          replace_backslash_with_forward_slash(temp);
           files.emplace_back(temp);
-          std::cout << "Added file: " << temp << std::endl;
         }
       }
     }
   } catch (const std::filesystem::filesystem_error &e) {
-    std::cout << "filesystem error, getting files" << std::endl;
+    std::cout << "Filesystem error, getting files" << "\n";
   }
 }
 
@@ -84,7 +82,6 @@ void add_folders(std::vector<std::string> &folders, std::string path) {
       std::string temp = entry.path().filename().string();
       if (contains(exempt_folders, temp)) {
       } else {
-        std::cout << "Added new folder: " << temp << std::endl;
         std::string full_path = entry.path().string();
         folders.emplace_back(full_path);
         add_folders(folders, full_path);
@@ -96,11 +93,12 @@ void add_folders(std::vector<std::string> &folders, std::string path) {
 void get_source_files(project &project) {
   auto current_file_path = std::filesystem::current_path();
   std::string path = current_file_path.string();
-  std::cout << "Starting to add folders" << std::endl;
+  std::cout << "\n";
+  std::cout << "----------------------" << "\n";
+  std::cout << "Adding folders..." << "\n";
   add_folders(project.folders, path);
-  std::cout << "Starting to add cpp files from folders" << std::endl;
+  std::cout << "Adding source files..." << "\n";
   for (const auto &folder : project.folders) {
-    std::cout << folder << std::endl;
     add_cpp_files(project.cpp_files, folder);
     add_c_files(project.c_files, folder);
   }

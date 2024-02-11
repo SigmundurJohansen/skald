@@ -1,0 +1,4 @@
+{
+    "vcpkg_path": "D:/tools/vcpkg/installed/x64-windows/",
+    "dependencies":["spdlog", "raylib"]    
+}
