@@ -47,7 +47,7 @@ int get_settings(project &project, make_settings &make_settings) {
   }
 
   make_settings.compiler_flags.emplace_back(" -Wall");
-  make_settings.compiler_flags.emplace_back(" -Wextra");
+  // make_settings.compiler_flags.emplace_back(" -Wextra");
   make_settings.compiler_flags.emplace_back(" -std=c++17");
   make_settings.compiler_flags.emplace_back(" -fstack-usage");
 
