@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
       return 1;
     }
   }
-  std::cout << "Skald version: " << version;
+  std::cout << "Skald version: " << version << "\n";
   project.project_folder = std::filesystem::current_path().string();
 
   // getting and listing all files needed
@@ -31,6 +31,18 @@ int main(int argc, char *argv[]) {
   get_source_files(project);
   get_settings(project, make_settings);
   get_dependencies(project);
+  // change folder full path to relative path
+  for (auto &relative : project.folders) {
+    relative = relative.substr(project.project_folder.size() + 1);
+  }
+
+  // change file full path to relative path, for both c and cpp files.
+  for (auto &file : project.cpp_files) {
+    file = file.substr(project.project_folder.size() + 1);
+  }
+  for (auto &file : project.c_files) {
+    file = file.substr(project.project_folder.size() + 1);
+  }
   if (project.verbose) {
     std::cout << "----------------------\n";
     std::cout << "Listing project files: \n";
@@ -46,18 +58,6 @@ int main(int argc, char *argv[]) {
     }
     if (ret != 0)
       std::cout << "Error getting settings\n";
-    // change folder full path to relative path
-    for (auto &relative : project.folders) {
-      relative = relative.substr(project.project_folder.size() + 1);
-    }
-
-    // change file full path to relative path, for both c and cpp files.
-    for (auto &file : project.cpp_files) {
-      file = file.substr(project.project_folder.size() + 1);
-    }
-    for (auto &file : project.c_files) {
-      file = file.substr(project.project_folder.size() + 1);
-    }
 
     std::cout << "----------------------\n";
     std::cout << "Listing source files: \n";
