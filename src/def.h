@@ -19,4 +19,5 @@ struct project {
   std::vector<std::string> project_files;
   std::vector<std::string> dependencies;
   std::vector<std::string> includes;
+  std::vector<std::string> assets;
 };

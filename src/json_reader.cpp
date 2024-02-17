@@ -52,6 +52,17 @@ int get_settings(project &project, make_settings &make_settings) {
   make_settings.compiler_flags.emplace_back(" -std=c++17");
   make_settings.compiler_flags.emplace_back(" -fstack-usage");
 
+  // assets folders
+  yyjson_val *assets_val = yyjson_obj_get(root, "assets");
+
+  size_t assets_idx, assets_max;
+  yyjson_val *asset_val;
+  yyjson_arr_foreach(assets_val, assets_idx, assets_max, asset_val) {
+    const char *asset = yyjson_get_str(asset_val);
+    if (asset) {
+      project.assets.push_back(std::string(asset));
+    }
+  }
   // Clean up
   yyjson_doc_free(settings_file);
 
@@ -117,6 +128,7 @@ int get_dependencies(project &project) {
       project.includes.push_back(std::string(inc));
     }
   }
+  
   // Clean up
   yyjson_doc_free(dependency_file);
 

@@ -10,6 +10,11 @@ void replace_forward_slash_with_backslash(std::string &str) {
 }
 
 void generate_makefile(make_settings &settings, project &project) {
+
+  std::string vcpkg_path = project.vcpkg_path;
+  replace_forward_slash_with_backslash(vcpkg_path);
+  std::string project_folder = project.project_folder;
+  replace_forward_slash_with_backslash(project_folder);
   // Open a file for writing (or create if it doesn't exist)
   std::ofstream makefile("Makefile");
   // Check if the file is open
@@ -62,7 +67,7 @@ void generate_makefile(make_settings &settings, project &project) {
     makefile << "OBJS := $(CPP_OBJS) $(C_OBJS)"
              << "\n\n";
 
-    makefile << "all: $(TARGET) copy_libs copy_inclues\n\n";
+    makefile << "all: $(TARGET) copy_libs copy_inclues copy_assets\n\n";
 
     makefile << "$(TARGET):$(OBJS)\n";
     makefile << "\t$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)\n\n";
@@ -98,25 +103,29 @@ void generate_makefile(make_settings &settings, project &project) {
     makefile
         << "\t@if not exist \"$(BUILDDIR)/lib\" mkdir \"$(BUILDDIR)/lib\"\n";
     for (auto dep : project.dependencies) {
-      std::string temp = project.vcpkg_path;
-      replace_forward_slash_with_backslash(temp);
-      makefile << "\t@xcopy /q /y /i \"" << temp << "bin\\" << dep
+      makefile << "\t@xcopy /q /y /i \"" << vcpkg_path << "bin\\" << dep
                << ".dll\" $(BUILDDIR)\n";
-      makefile << "\t@xcopy /q /y /i \"" << temp << "lib\\" << dep
+      makefile << "\t@xcopy /q /y /i \"" << vcpkg_path << "lib\\" << dep
                << ".lib\" $(BUILDDIR)\\lib\n";
     }
     makefile << "\n";
 
     makefile << "copy_inclues: \n";
-    makefile << "\t@if not exist \"$(BUILDDIR)/external\" mkdir \"$(BUILDDIR)/external\"\n";
+    makefile << "\t@if not exist \"$(BUILDDIR)/external\" mkdir "
+                "\"$(BUILDDIR)/external\"\n";
     for (auto inc : project.includes) {
-      std::string temp = project.vcpkg_path;
-      replace_forward_slash_with_backslash(temp);
-      makefile << "\t@xcopy /s /e /y /q /d /f /i  \"" << temp << "include\\" << inc
+      makefile << "\t@xcopy /s /e /y /q /d /i  \"" << vcpkg_path << "include\\" << inc
                << "\" $(BUILDDIR)\\external\\" << inc << "\\\n";
     }
     makefile << "\n";
 
+    makefile << "copy_assets: \n";
+    for (auto asset : project.assets) {
+      makefile << "\t@xcopy /s /e /y /q /d /i \"" << project_folder
+               << "\\" << asset << "\" \"$(BUILDDIR)\\" << asset << "\"\n";
+    }
+
+    makefile << "\n";
     makefile << "clean:\n";
     makefile << "\trmdir /s /q $(BUILDDIR)\n";
 
