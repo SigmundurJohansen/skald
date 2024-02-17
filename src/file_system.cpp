@@ -22,7 +22,8 @@ void get_project_files(project &project) {
       }
     }
   } catch (const std::filesystem::filesystem_error &e) {
-    std::cout << "Filesystem error: getting project files" << "\n";
+    std::cout << "Filesystem error: getting project files"
+              << "\n";
   }
 }
 
@@ -47,7 +48,8 @@ void add_cpp_files(std::vector<std::string> &files, std::string path) {
       }
     }
   } catch (const std::filesystem::filesystem_error &e) {
-    std::cout << "Filesystem error, getting files" << "\n";
+    std::cout << "Filesystem error, getting files"
+              << "\n";
   }
 }
 
@@ -55,7 +57,8 @@ void add_c_files(std::vector<std::string> &files, std::string path) {
   try {
     for (const auto &entry : std::filesystem::directory_iterator(path)) {
       if (entry.is_regular_file()) {
-        if (entry.path().extension() == ".c" && entry.path().extension() != ".cpp") {
+        if (entry.path().extension() == ".c" &&
+            entry.path().extension() != ".cpp") {
           std::string temp = entry.path().string();
           replace_backslash_with_forward_slash(temp);
           files.emplace_back(temp);
@@ -63,7 +66,8 @@ void add_c_files(std::vector<std::string> &files, std::string path) {
       }
     }
   } catch (const std::filesystem::filesystem_error &e) {
-    std::cout << "Filesystem error, getting files" << "\n";
+    std::cout << "Filesystem error, getting files"
+              << "\n";
   }
 }
 
@@ -93,11 +97,12 @@ void add_folders(std::vector<std::string> &folders, std::string path) {
 void get_source_files(project &project) {
   auto current_file_path = std::filesystem::current_path();
   std::string path = current_file_path.string();
-  std::cout << "\n";
-  std::cout << "----------------------" << "\n";
-  std::cout << "Adding folders..." << "\n";
+  if (project.verbose) {
+    std::cout << "\n----------------------\nAdding folders...\n";
+  }
   add_folders(project.folders, path);
-  std::cout << "Adding source files..." << "\n";
+  if (project.verbose)
+    std::cout << "Adding source files...\n";
   for (const auto &folder : project.folders) {
     add_cpp_files(project.cpp_files, folder);
     add_c_files(project.c_files, folder);

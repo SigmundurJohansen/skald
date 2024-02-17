@@ -11,6 +11,7 @@ struct make_settings {
 struct project {
   std::string project_name = "foo";
   std::string project_folder = "";
+  bool verbose = false;
   std::string vcpkg_path;
   std::vector<std::string> folders;
   std::vector<std::string> cpp_files;

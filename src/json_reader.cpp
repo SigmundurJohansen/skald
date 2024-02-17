@@ -34,6 +34,7 @@ int get_settings(project &project, make_settings &make_settings) {
   yyjson_val *project_name_val = yyjson_obj_get(root, "project_name");
   if (project_name_val) {
     project.project_name = yyjson_get_str(project_name_val);
+     if (project.verbose)
     std::cout << "Project Name: " << project.project_name << "\n";
   } else {
     std::cout << "The key 'project_name' does not exist.\n";
@@ -88,6 +89,7 @@ int get_dependencies(project &project) {
   yyjson_val *vcpkg_path_val = yyjson_obj_get(root, "vcpkg_path");
   if (vcpkg_path_val) {
     project.vcpkg_path = yyjson_get_str(vcpkg_path_val);
+     if (project.verbose)
     std::cout << "vcpkg path: " << project.vcpkg_path << "\n";
   } else {
     std::cout << "The key 'vcpkg_path' does not exist.\n";
