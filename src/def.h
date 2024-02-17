@@ -17,4 +17,5 @@ struct project {
   std::vector<std::string> c_files;
   std::vector<std::string> project_files;
   std::vector<std::string> dependencies;
+  std::vector<std::string> includes;
 };

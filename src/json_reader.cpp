@@ -96,15 +96,25 @@ int get_dependencies(project &project) {
   // Access the "dependencies" value
   yyjson_val *dependency_val = yyjson_obj_get(root, "dependencies");
 
-  size_t idx, max;
-  yyjson_val *val;
-  yyjson_arr_foreach(dependency_val, idx, max, val) {
-    const char *dep = yyjson_get_str(val);
+  size_t dep_idx, dep_max;
+  yyjson_val *dep_val;
+  yyjson_arr_foreach(dependency_val, dep_idx, dep_max, dep_val) {
+    const char *dep = yyjson_get_str(dep_val);
     if (dep) {
       project.dependencies.push_back(std::string(dep));
     }
   }
 
+  yyjson_val *includes_val = yyjson_obj_get(root, "includes");
+
+  size_t include_idx, include_max;
+  yyjson_val *include_val;
+  yyjson_arr_foreach(includes_val, include_idx, include_max, include_val) {
+    const char *inc = yyjson_get_str(include_val);
+    if (inc) {
+      project.includes.push_back(std::string(inc));
+    }
+  }
   // Clean up
   yyjson_doc_free(dependency_file);
 

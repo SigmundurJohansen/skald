@@ -1,6 +1,5 @@
 #include "makefile.h"
 
-
 // Function to replace all backslashes with forward slashes in a string
 void replace_forward_slash_with_backslash(std::string &str) {
   for (auto &ch : str) {
@@ -63,7 +62,7 @@ void generate_makefile(make_settings &settings, project &project) {
     makefile << "OBJS := $(CPP_OBJS) $(C_OBJS)"
              << "\n\n";
 
-    makefile << "all: $(TARGET) copy_libs\n\n";
+    makefile << "all: $(TARGET) copy_libs copy_inclues\n\n";
 
     makefile << "$(TARGET):$(OBJS)\n";
     makefile << "\t$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)\n\n";
@@ -101,10 +100,20 @@ void generate_makefile(make_settings &settings, project &project) {
     for (auto dep : project.dependencies) {
       std::string temp = project.vcpkg_path;
       replace_forward_slash_with_backslash(temp);
-      makefile << "\tcopy \"" << temp << "bin\\" << dep
+      makefile << "\t@xcopy /q /y /i \"" << temp << "bin\\" << dep
                << ".dll\" $(BUILDDIR)\n";
-      makefile << "\tcopy \"" << temp << "lib\\" << dep
+      makefile << "\t@xcopy /q /y /i \"" << temp << "lib\\" << dep
                << ".lib\" $(BUILDDIR)\\lib\n";
+    }
+    makefile << "\n";
+
+    makefile << "copy_inclues: \n";
+    makefile << "\t@if not exist \"$(BUILDDIR)/external\" mkdir \"$(BUILDDIR)/external\"\n";
+    for (auto inc : project.includes) {
+      std::string temp = project.vcpkg_path;
+      replace_forward_slash_with_backslash(temp);
+      makefile << "\t@xcopy /s /e /y /q /d /f /i  \"" << temp << "include\\" << inc
+               << "\" $(BUILDDIR)\\external\\" << inc << "\\\n";
     }
     makefile << "\n";
 
