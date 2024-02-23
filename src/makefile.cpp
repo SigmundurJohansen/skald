@@ -66,8 +66,9 @@ void generate_makefile(make_settings &settings, project &project) {
              << "\n\n";
     makefile << "OBJS := $(CPP_OBJS) $(C_OBJS)"
              << "\n\n";
-
-    makefile << "all: $(TARGET) copy_libs copy_inclues copy_assets\n\n";
+    makefile << "pre_build: copy_inclues";
+    makefile << "\n";
+    makefile << "all: pre_build $(TARGET) copy_libs copy_assets\n\n";
 
     makefile << "$(TARGET):$(OBJS)\n";
     makefile << "\t$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)\n\n";
@@ -114,15 +115,15 @@ void generate_makefile(make_settings &settings, project &project) {
     makefile << "\t@if not exist \"$(BUILDDIR)/external\" mkdir "
                 "\"$(BUILDDIR)/external\"\n";
     for (auto inc : project.includes) {
-      makefile << "\t@xcopy /s /e /y /q /d /i  \"" << vcpkg_path << "include\\" << inc
-               << "\" $(BUILDDIR)\\external\\" << inc << "\\\n";
+      makefile << "\t@xcopy /s /e /y /q /d /i  \"" << vcpkg_path << "include\\"
+               << inc << "\" \"$(BUILDDIR)\\external\\" << inc << "\\\"\n";
     }
     makefile << "\n";
 
     makefile << "copy_assets: \n";
     for (auto asset : project.assets) {
-      makefile << "\t@xcopy /s /e /y /q /d /i \"" << project_folder
-               << "\\" << asset << "\" \"$(BUILDDIR)\\" << asset << "\"\n";
+      makefile << "\t@xcopy /s /e /y /q /d /i \"" << project_folder << "\\"
+               << asset << "\" \"$(BUILDDIR)\\" << asset << "\"\n";
     }
 
     makefile << "\n";
