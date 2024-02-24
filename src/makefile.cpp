@@ -128,6 +128,10 @@ void generate_makefile(make_settings &settings, project &project) {
     makefile << "clean:\n";
     makefile << "\trmdir /s /q $(BUILDDIR)\n";
 
+    makefile << "\n";
+    makefile << "run: $(TARGET)\n";
+    makefile << "\t./$(TARGET)\n";
+	
     // Close the file
     makefile.close();
     std::cout << "Makefile generated successfully."
