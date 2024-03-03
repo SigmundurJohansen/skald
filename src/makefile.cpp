@@ -190,7 +190,7 @@ void generate_makefile(make_settings &settings, project &project) {
                  << asset << "\" \"$(BUILDDIR)\\" << asset << "\"\n";
 #else
       makefile << "\t@cp -r \"" << project_folder << "/" << asset
-               << "\" \"/$(BUILDDIR)/\"\n";
+               << "\" \"$(BUILDDIR)/\"\n";
 #endif
       }
 
