@@ -73,8 +73,7 @@ void generate_makefile(make_settings &settings, project &project) {
              << "\n\n";
     makefile << "OBJS := $(CPP_OBJS) $(C_OBJS)"
              << "\n\n";
-
-    makefile << "all: $(TARGET) copy_libs copy_inclues copy_assets\n\n";
+    makefile << "all: $(TARGET) copy_inclues copy_libs copy_assets\n\n";
 
     makefile << "$(TARGET):$(OBJS)\n";
     makefile << "\t$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)\n\n";
