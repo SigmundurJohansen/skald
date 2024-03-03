@@ -189,8 +189,8 @@ void generate_makefile(make_settings &settings, project &project) {
         makefile << "\t@xcopy /s /e /y /q /d /i \"" << project_folder << "\\"
                  << asset << "\" \"$(BUILDDIR)\\" << asset << "\"\n";
 #else
-      makefile << "\t@cp \"" << project_folder << "/ " << asset
-               << "/$(BUILDDIR)/" << asset << "\"\n";
+      makefile << "\t@cp \"" << project_folder << "/" << asset
+               << " /$(BUILDDIR)/" << asset << "\"\n";
 #endif
       }
 
