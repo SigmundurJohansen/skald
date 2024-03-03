@@ -1,4 +1,3 @@
-#pragma warning(disable : 4996)
 #include "src/def.h"
 #include "src/file_system.h"
 #include "src/json_reader.h"
