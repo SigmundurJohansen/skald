@@ -40,13 +40,12 @@ void generate_makefile(make_settings &settings, project &project) {
     makefile << "TARGET=$(BUILDDIR)/" << project.project_name;
 #if defined(_WIN32) || defined(_WIN64)
     makefile << ".exe\n\n";
-#else
+#endif
     {
       makefile << "\n";
       makefile << "BUILDDIR:= build";
       makefile << "\n\n";
     }
-#endif
     if (!project.c_files.empty()) {
       makefile << "C_SRCS:= $(wildcard " << project.c_files[0] << ")";
       for (unsigned int i = 1; i < project.c_files.size(); i++) {
@@ -174,7 +173,7 @@ void generate_makefile(make_settings &settings, project &project) {
       for (auto inc : project.includes) {
 #if defined(_WIN32) || defined(_WIN64)
         makefile << "\t@xcopy /s /e /y /q /d /i  \"" << vcpkg_path
-                 << "include\\" << inc << "\" $(BUILDDIR)\\external\\" << inc
+                 << "include\\" << inc << "\" \"$(BUILDDIR)\\external\\\"" << inc
                  << "\\\n";
 #else
       makefile << "\t@cp -r \"" << vcpkg_path << "include/" << inc
@@ -210,8 +209,8 @@ void generate_makefile(make_settings &settings, project &project) {
       std::cout << "Makefile generated successfully."
                 << "\n";
     }
-    else {
-      std::cerr << "Unable to open Makefile for writing."
-                << "\n";
-    }
+  } else {
+    std::cerr << "Unable to open Makefile for writing."
+              << "\n";
   }
+}
