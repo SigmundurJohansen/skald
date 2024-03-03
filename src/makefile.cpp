@@ -35,11 +35,16 @@ void generate_makefile(make_settings &settings, project &project) {
     }
     makefile << "\n\n";
 
-    makefile << "TARGET=$(BUILDDIR)/" << project.project_name << ".exe\n\n";
-
-    makefile << "BUILDDIR:= build";
-    makefile << "\n\n";
-
+    makefile << "TARGET=$(BUILDDIR)/" << project.project_name;
+#if defined(_WIN32) || defined(_WIN64)
+    makefile << ".exe\n\n";
+#else
+    {
+      makefile << "\n";
+      makefile << "BUILDDIR:= build";
+      makefile << "\n\n";
+    }
+#endif
     if (!project.c_files.empty()) {
       makefile << "C_SRCS:= $(wildcard " << project.c_files[0] << ")";
       for (unsigned int i = 1; i < project.c_files.size(); i++) {
@@ -89,13 +94,22 @@ void generate_makefile(make_settings &settings, project &project) {
     makefile << "$(BUILDDIR)/\%.o: \%.cpp\n";
     makefile << "\t@if not exist \"$(BUILDDIR)\" @mkdir $(@D)\n";
     for (unsigned int i = 0; i < project.folders.size(); i++) {
+#if defined(_WIN32) || defined(_WIN64)
       makefile << "\t@if not exist \"$(BUILDDIR)\\" << project.folders[i]
                << "\" mkdir \"$(BUILDDIR)\\" << project.folders[i] << "\"\n";
+#else
+      makefile << "\t@if not exist \"$(BUILDDIR)/" << project.folders[i]
+               << "\" mkdir \"$(BUILDDIR)/" << project.folders[i] << "\"\n";
+#endif
     }
     makefile << "\t$(CXX) $(CXXFLAGS) -c $< -o $@\n\n";
 
     for (unsigned int i = 0; i < project.folders.size(); i++) {
+#if defined(_WIN32) || defined(_WIN64)
       makefile << "$(BUILDDIR)/\%.o: " << project.folders[i] << "/\%.cpp\n";
+#else
+      makefile << "$(BUILDDIR)/%.o: " << project.folders[i] << "/\%.cpp\n";
+#endif
       makefile << "\t$(CXX) $(CXXFLAGS) -c $< -o $@\n\n";
     }
 
@@ -103,38 +117,61 @@ void generate_makefile(make_settings &settings, project &project) {
     makefile
         << "\t@if not exist \"$(BUILDDIR)/lib\" mkdir \"$(BUILDDIR)/lib\"\n";
     for (auto dep : project.dependencies) {
-      makefile << "\t@xcopy /q /y /i \"" << vcpkg_path << "bin\\" << dep
-               << ".dll\" $(BUILDDIR)\n";
-      makefile << "\t@xcopy /q /y /i \"" << vcpkg_path << "lib\\" << dep
-               << ".lib\" $(BUILDDIR)\\lib\n";
+#if defined(_WIN32) || defined(_WIN64)
+      {
+        makefile << "\t@xcopy /q /y /i \"" << vcpkg_path << "bin\\" << dep
+                 << ".dll\" $(BUILDDIR)\n";
+        makefile << "\t@xcopy /q /y /i \"" << vcpkg_path << "lib\\" << dep
+                 << ".lib\" $(BUILDDIR)\\lib\n";
+      }
+#else
+      {
+        makefile << "\tcp \"" << vcpkg_path << "bin/" << dep
+                 << ".so\" $(BUILDDIR)\n";
+        makefile << "\tcp \"" << vcpkg_path << "bin/" << dep
+                 << ".lib\" $(BUILDDIR)\\lib\n";
+      }
     }
-    makefile << "\n";
+#endif
+      makefile << "\n";
 
-    makefile << "copy_inclues: \n";
-    makefile << "\t@if not exist \"$(BUILDDIR)/external\" mkdir "
-                "\"$(BUILDDIR)/external\"\n";
-    for (auto inc : project.includes) {
-      makefile << "\t@xcopy /s /e /y /q /d /i  \"" << vcpkg_path << "include\\" << inc
-               << "\" $(BUILDDIR)\\external\\" << inc << "\\\n";
+      makefile << "copy_inclues: \n";
+      makefile << "\t@if not exist \"$(BUILDDIR)/external\" mkdir "
+                  "\"$(BUILDDIR)/external\"\n";
+      for (auto inc : project.includes) {
+#if defined(_WIN32) || defined(_WIN64)
+        makefile << "\t@xcopy /s /e /y /q /d /i  \"" << vcpkg_path
+                 << "include\\" << inc << "\" $(BUILDDIR)\\external\\" << inc
+                 << "\\\n";
+#else
+      makefile << "\tcp \"" << vcpkg_path << "include/" << inc
+               << "\" $(BUILDDIR)/external/" << inc << "\n";
+#endif
+      }
+      makefile << "\n";
+
+      makefile << "copy_assets: \n";
+      for (auto asset : project.assets) {
+#if defined(_WIN32) || defined(_WIN64)
+        makefile << "\t@xcopy /s /e /y /q /d /i \"" << project_folder << "\\"
+                 << asset << "\" \"$(BUILDDIR)\\" << asset << "\"\n";
+#else
+      makefile << "\tcp \"" << project_folder << "/" << asset << "/$(BUILDDIR)/"
+               << asset << "\"\n";
+#endif
+      }
+
+      makefile << "\n";
+      makefile << "clean:\n";
+      makefile << "\trmdir /s /q $(BUILDDIR)\n";
+
+      // Close the file
+      makefile.close();
+      std::cout << "Makefile generated successfully."
+                << "\n";
     }
-    makefile << "\n";
-
-    makefile << "copy_assets: \n";
-    for (auto asset : project.assets) {
-      makefile << "\t@xcopy /s /e /y /q /d /i \"" << project_folder
-               << "\\" << asset << "\" \"$(BUILDDIR)\\" << asset << "\"\n";
+    else {
+      std::cerr << "Unable to open Makefile for writing."
+                << "\n";
     }
-
-    makefile << "\n";
-    makefile << "clean:\n";
-    makefile << "\trmdir /s /q $(BUILDDIR)\n";
-
-    // Close the file
-    makefile.close();
-    std::cout << "Makefile generated successfully."
-              << "\n";
-  } else {
-    std::cerr << "Unable to open Makefile for writing."
-              << "\n";
   }
-}

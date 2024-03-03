@@ -8,6 +8,21 @@
 const std::string version = "v1.0.0";
 
 int main(int argc, char *argv[]) {
+
+#if defined(_WIN32) || defined(_WIN64)
+  std::cout << "Running on Windows\n";
+#elif defined(__linux__)
+  std::cout << "Running on Linux\n";
+#elif defined(__APPLE__) && defined(__MACH__)
+  std::cout << "Running on macOS\n";
+#elif defined(__unix__)
+  std::cout << "Running on a UNIX-like system\n";
+#elif defined(__FreeBSD__)
+  std::cout << "Running on FreeBSD\n";
+#else
+  std::cout << "Unknown platform\n";
+#endif
+
   make_settings make_settings;
   project project;
 
