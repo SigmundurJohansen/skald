@@ -27,7 +27,7 @@ void generate_makefile(make_settings &settings, project &project) {
     makefile << "CFLAGS := -g \n"; // # Add your C specific flags here
     makefile << "CXXFLAGS:=";
     for (auto flag : settings.compiler_flags)
-      makefile << flag;
+      makefile << " " << flag;
     makefile << " -I" << project.vcpkg_path << "include\n";
     if (!project.dependencies.empty()) {
       makefile << "LDFLAGS := ";
@@ -72,7 +72,14 @@ void generate_makefile(make_settings &settings, project &project) {
              << "\n\n";
     makefile << "OBJS := $(CPP_OBJS) $(C_OBJS)"
              << "\n\n";
-    makefile << "all: $(TARGET) copy_inclues copy_libs copy_assets\n\n";
+    makefile << "all: $(TARGET) ";
+    if (!project.includes.empty())
+      makefile << " copy_inclues";
+    if (!project.dependencies.empty())
+      makefile << " copy_libs";
+    if (!project.assets.empty())
+      makefile << " copy_assets";
+    makefile << "\n\n";
 
     makefile << "$(TARGET):$(OBJS)\n";
     makefile << "\t$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)\n\n";
@@ -121,6 +128,7 @@ void generate_makefile(make_settings &settings, project &project) {
                << "\"; fi\n";
 #endif
     }
+
     makefile << "\t$(CXX) $(CXXFLAGS) -c $< -o $@\n\n";
 
     for (unsigned int i = 0; i < project.folders.size(); i++) {
@@ -132,85 +140,88 @@ void generate_makefile(make_settings &settings, project &project) {
       makefile << "\t$(CXX) $(CXXFLAGS) -c $< -o $@\n\n";
     }
 
-    makefile << "copy_libs: \n";
+    if (!project.dependencies.empty()) {
+      makefile << "copy_libs: \n";
 
 #if defined(_WIN32) || defined(_WIN64)
-    makefile
-        << "\t@if not exist \"$(BUILDDIR)/lib\" mkdir \"$(BUILDDIR)/lib\"\n";
+      makefile
+          << "\t@if not exist \"$(BUILDDIR)/lib\" mkdir \"$(BUILDDIR)/lib\"\n";
 #else
-    makefile << "\t@if [ ! -d \"$(BUILDDIR)/lib/\" ]; then mkdir -p "
-                "\"$(BUILDDIR)/lib/\"; fi\n";
+      makefile << "\t@if [ ! -d \"$(BUILDDIR)/lib/\" ]; then mkdir -p "
+                  "\"$(BUILDDIR)/lib/\"; fi\n";
 #endif
-
-    for (auto dep : project.dependencies) {
+      for (auto dep : project.dependencies) {
 #if defined(_WIN32) || defined(_WIN64)
-      {
-        makefile << "\t@xcopy /q /y /i \"" << vcpkg_path << "bin\\" << dep
-                 << ".dll\" $(BUILDDIR)\n";
-        makefile << "\t@xcopy /q /y /i \"" << vcpkg_path << "lib\\" << dep
-                 << ".lib\" $(BUILDDIR)\\lib\n";
-      }
+        {
+          makefile << "\t@xcopy /q /y /i \"" << vcpkg_path << "bin\\" << dep
+                   << ".dll\" \"$(BUILDDIR)\"\n";
+          makefile << "\t@xcopy /q /y /i \"" << vcpkg_path << "lib\\" << dep
+                   << ".lib\" \"$(BUILDDIR)\\lib\"\n";
+        }
 #else
-      {
-        // makefile << "\tcp \"" << vcpkg_path << "bin/" << dep << ".so\"
-        // $(BUILDDIR)\n";
-        makefile << "\t@cp \"" << vcpkg_path << "lib/lib" << dep
-                 << ".a\" $(BUILDDIR)/lib\n";
+        {
+          // makefile << "\tcp \"" << vcpkg_path << "bin/" << dep << ".so\"
+          // $(BUILDDIR)\n";
+          makefile << "\t@cp \"" << vcpkg_path << "lib/lib" << dep
+                   << ".a\" $(BUILDDIR)/lib\n";
+        }
+#endif
       }
     }
-#endif
-      makefile << "\n";
 
+    makefile << "\n";
+
+    if (!project.includes.empty()) {
       makefile << "copy_inclues: \n";
 
 #if defined(_WIN32) || defined(_WIN64)
       makefile << "\t@if not exist \"$(BUILDDIR)/external\" mkdir "
                   "\"$(BUILDDIR)/external\"\n";
 #else
-    makefile << "\t@if [ ! -d \"$(BUILDDIR)/external\" ]; then mkdir -p "
-                "\"$(BUILDDIR)/external/\"; fi\n";
+      makefile << "\t@if [ ! -d \"$(BUILDDIR)/external\" ]; then mkdir -p "
+                  "\"$(BUILDDIR)/external/\"; fi\n";
 #endif
       for (auto inc : project.includes) {
 #if defined(_WIN32) || defined(_WIN64)
         makefile << "\t@xcopy /s /e /y /q /d /i  \"" << vcpkg_path
-                 << "include\\" << inc << "\" \"$(BUILDDIR)\\external\\\"" << inc
-                 << "\\\n";
+                 << "include\\" << inc << "\" \"$(BUILDDIR)\\external\\" << inc
+                 << "\\\"\n";
 #else
-      makefile << "\t@cp -r \"" << vcpkg_path << "include/" << inc
-               << "\" $(BUILDDIR)/external/" << inc << "\n";
+        makefile << "\t@cp -r \"" << vcpkg_path << "include/" << inc
+                 << "\" $(BUILDDIR)/external/" << inc << "\n";
 #endif
       }
-      makefile << "\n";
+    }
+    makefile << "\n";
 
+    if (!project.assets.empty()) {
       makefile << "copy_assets: \n";
       for (auto asset : project.assets) {
 #if defined(_WIN32) || defined(_WIN64)
         makefile << "\t@xcopy /s /e /y /q /d /i \"" << project_folder << "\\"
                  << asset << "\" \"$(BUILDDIR)\\" << asset << "\"\n";
 #else
-      makefile << "\t@cp \"" << project_folder << "/" << asset
-               << "/$(BUILDDIR)/" << asset << "\"\n";
+        makefile << "\t@cp \"" << project_folder << "/" << asset
+                 << "/$(BUILDDIR)/" << asset << "\"\n";
 #endif
       }
+    }
 
-      makefile << "\n";
-      makefile << "run: $(TARGET)\n";
-      makefile << "\t./$(TARGET)\n";
+    makefile << "\n";
+    makefile << "run: $(TARGET)\n";
+    makefile << "\t./$(TARGET)\n";
 
-      makefile << "\n";
-      makefile << "clean:\n";
+    makefile << "\n";
+    makefile << "clean:\n";
 #if defined(_WIN32) || defined(_WIN64)
-      makefile << "\trmdir /s /q $(BUILDDIR)\n";
+    makefile << "\trmdir /s /q $(BUILDDIR)\n";
 #else
     makefile << "\trm -rf $(BUILDDIR)\n";
 #endif
-      // Close the file
-      makefile.close();
-      std::cout << "Makefile generated successfully."
-                << "\n";
-    }
+    // Close the file
+    makefile.close();
+    std::cout << "Makefile generated successfully.\n";
   } else {
-    std::cerr << "Unable to open Makefile for writing."
-              << "\n";
+    std::cerr << "Unable to open Makefile for writing.\n";
   }
 }

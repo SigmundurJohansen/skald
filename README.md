@@ -3,26 +3,29 @@
 ### How to build
 
  ```
-g++ --std=c++17 -o skald main.cpp src/file_system.cpp src/makefile.cpp external/yyjson.c src/json_reader.cpp
+g++ --std=c++17 -o skald main.cpp src/file_system.cpp src/makefile.cpp external/yyjson.c src/json_reader.cpp src/default_project.cpp
  ```
 or
  ```
-clang++ --std=c++17 -o skald main.cpp src/file_system.cpp src/makefile.cpp external/yyjson.c src/json_reader.cpp
+clang++ --std=c++17 -o skald main.cpp src/file_system.cpp src/makefile.cpp external/yyjson.c src/json_reader.cpp src/default_project.cpp
  ```
-
-only works on windows at the moment
 
 ### How to use
 
-Run it in project folder, easy if you've added skald to path.
+To get started you can generate a default template project in your project directory, easy if you've added skald to path, to startup a default project simply run
+ ```
+skald -default
+ ```
+Review the main.cpp, and add whatever you need.
+Then run skald. This will setup the make file.
  ```
 skald
  ```
-This will setup the make file, then just build.
+Then to build execute.
  ```
 make -j8
  ```
-And to clean just
+And to clean.
  ```
 make clean
  ```
@@ -31,8 +34,8 @@ make clean
 you can add a settings.json file to your project folder, and include something like:
 ```
 {
-    "project_name": "Skald",
-    "debug": "true"
+    "project_name": "new_project",
+	"compiler_flag" : ["-g","-std=c++20","-Wall","-fstack-usage"]
 }
 ```
 here you can set project name.
@@ -42,7 +45,14 @@ you first need to add a dependencies.json file, and include something like this:
 ```
 {
     "vcpkg_path": "D:/tools/vcpkg/installed/x64-windows/",
-    "dependencies":["example_one", "example_two"]    
+	"dependencies" : ["fmt"],
+	"includes" : []
 }
 ```
 and skald will add the dependencies and do the linking, not very smart, but works in simple cases.
+
+### Add default format
+To add a default .clang-format file
+```
+skald -format
+```

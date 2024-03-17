@@ -39,18 +39,16 @@ int get_settings(project &project, make_settings &make_settings) {
   } else {
     std::cout << "The key 'project_name' does not exist.\n";
   }
-  // Access the "debug" value
-  yyjson_val *debug_val = yyjson_obj_get(root, "debug");
-  if (debug_val) {
-    make_settings.compiler_flags.emplace_back("-g");
-  } else {
-    std::cout << "The key 'debug' does not exist.\n";
+  
+  yyjson_val *compiler_val = yyjson_obj_get(root, "compiler_flag");
+  size_t dep_idx, dep_max;
+  yyjson_val *dep_val;
+  yyjson_arr_foreach(compiler_val, dep_idx, dep_max, dep_val) {
+    const char *dep = yyjson_get_str(dep_val);
+    if (dep) {
+       make_settings.compiler_flags.emplace_back(std::string(dep));
+    }
   }
-
-  make_settings.compiler_flags.emplace_back(" -Wall");
-  // make_settings.compiler_flags.emplace_back(" -Wextra");
-  make_settings.compiler_flags.emplace_back(" -std=c++17");
-  make_settings.compiler_flags.emplace_back(" -fstack-usage");
 
   // assets folders
   yyjson_val *assets_val = yyjson_obj_get(root, "assets");

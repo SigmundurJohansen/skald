@@ -1,4 +1,4 @@
 {
     "project_name": "skald",
-    "debug": "true"
+	"compiler_flag" : ["-g","-std=c++20","-Wall","-fstack-usage"]
 }

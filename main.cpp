@@ -1,10 +1,20 @@
 #include "src/def.h"
+#include "src/default_project.h"
 #include "src/file_system.h"
 #include "src/json_reader.h"
 #include "src/makefile.h"
+#include <cstdlib>
+#include <filesystem>
 #include <iostream>
 
-const std::string version = "v1.0.0";
+const std::string version = "v1.1.0";
+
+int make_default_project() {
+  int one = make_dependencies();
+  int two = make_compiler_flags();
+  int three = make_example_code();
+  return one + two + three;
+}
 
 int main(int argc, char *argv[]) {
 
@@ -28,10 +38,13 @@ int main(int argc, char *argv[]) {
   // Iterate through command-line arguments
   for (int i = 1; i < argc; ++i) {
     std::string arg = argv[i];
-
     // Check for various flags
     if (arg == "-v") {
       project.verbose = true;
+    } else if (arg == "-format") {
+      return clang_format();
+    } else if (arg == "-default") {
+      return make_default_project();
     } else {
       std::cerr << "Unknown flag: " << arg << "\n";
       return 1;
