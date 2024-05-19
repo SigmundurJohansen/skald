@@ -28,25 +28,19 @@ void generate_makefile(make_settings &settings, project &project) {
     makefile << "VCPKG_ROOT = " << project.vcpkg_path << "\n";
 
 #if defined(_WIN32) || defined(_WIN64)
-    makefile << "VCPKG_TAGET_TRIPLET = x64-windows \n";
+    makefile << "VCPKG_TARGET_TRIPLET = x64-windows\n";
 #else
-    makefile << "VCPKG_TAGET_TRIPLET = x64-linux \n";
+    makefile << "VCPKG_TARGET_TRIPLET = x64-linux\n";
 #endif
 
     makefile << "INCLUDES = -I$(VCPKG_ROOT)/installed/$(VCPKG_TARGET_TRIPLET)/include\n";
-    makefile << "LIBPATHS = -L$(VCPKG_ROOT)/installed/$(VCPKG_TARGET_TRIPLET)/lib\n";
-    makefile << "LIBS = ";
-    if (!project.dependencies.empty()) {
-      for (auto dep : project.dependencies)
-        makefile << " -l" << dep;
-    }
-
+    makefile << "LIBSPATHS = -L$(VCPKG_ROOT)/installed/$(VCPKG_TARGET_TRIPLET)/lib\n";
     makefile << "\n";
     makefile << "CFLAGS := -g $(INCLUDES) \n"; // # Add your C specific flags here
     makefile << "CXXFLAGS:=";
     for (auto flag : settings.compiler_flags)
       makefile << " " << flag;
-    makefile << "\n";
+    makefile << " $(INCLUDES) \n";
 
     if (!project.dependencies.empty()) {
       makefile << "LIBS = ";
@@ -58,15 +52,17 @@ void generate_makefile(make_settings &settings, project &project) {
       makefile << "LDFLAGS := $(LIBSPATHS) $(LIBS) \n";
     }
 
-    makefile << "TARGET=$(BUILDDIR)/" << project.project_name;
 
 #if defined(_WIN32) || defined(_WIN64)
-    makefile << ".exe\n\n";
+    makefile << ".exe\n";
 #endif
 
       makefile << "\n";
       makefile << "BUILDDIR:= build";
-      makefile << "\n\n";
+      makefile << "\n";
+
+      makefile << "TARGET=$(BUILDDIR)/" << project.project_name;
+      makefile << "\n";
 
     if (!project.c_files.empty()) {
       makefile << "C_SRCS:= $(wildcard " << project.c_files[0] << ")";
@@ -96,7 +92,7 @@ void generate_makefile(make_settings &settings, project &project) {
              << "\n\n";
     makefile << "all: $(TARGET) ";
     if (!project.includes.empty())
-      makefile << " copy_inclues";
+      makefile << " copy_includes";
     if (!project.dependencies.empty())
       makefile << " copy_libs";
     if (!project.assets.empty())
@@ -118,7 +114,7 @@ void generate_makefile(make_settings &settings, project &project) {
     makefile << "\t@if [ ! -d \"$(BUILDDIR)\"]; then mkdir $(@d); fi\n";
     for (unsigned int i = 0; i < project.folders.size(); i++) {
       makefile << "\t@if [ ! -d \"$(BUILDDIR)/" << project.folders[i]
-               << "/\"]; then mkdir \"$(BUILDDIR)/" << project.folders[i]
+               << "/\" ]; then mkdir \"$(BUILDDIR)/" << project.folders[i]
                << "/\"; fi\n";
     }
 #endif
@@ -175,16 +171,16 @@ void generate_makefile(make_settings &settings, project &project) {
       for (auto dep : project.dependencies) {
 #if defined(_WIN32) || defined(_WIN64)
         {
-          makefile << "\t@xcopy /q /y /i \"" << vcpkg_path << "bin\\" << dep
+          makefile << "\t@xcopy /q /y /i \"" << vcpkg_path << "\\installed\\$(VCPKG_TARGET_TRIPLET)\\bin\\" << dep
                    << ".dll\" \"$(BUILDDIR)\"\n";
-          makefile << "\t@xcopy /q /y /i \"" << vcpkg_path << "lib\\" << dep
+          makefile << "\t@xcopy /q /y /i \"" << vcpkg_path << "\\installed\\$(VCPKG_TARGET_TRIPLET)\\lib\\" << dep
                    << ".lib\" \"$(BUILDDIR)\\lib\"\n";
         }
 #else
         {
           // makefile << "\tcp \"" << vcpkg_path << "bin/" << dep << ".so\"
           // $(BUILDDIR)\n";
-          makefile << "\t@cp \"" << vcpkg_path << "lib/lib" << dep
+          makefile << "\t@cp \"" << vcpkg_path << "/installed/$(VCPKG_TARGET_TRIPLET)/lib/" << dep
                    << ".a\" $(BUILDDIR)/lib\n";
         }
 #endif
@@ -194,7 +190,7 @@ void generate_makefile(make_settings &settings, project &project) {
     makefile << "\n";
 
     if (!project.includes.empty()) {
-      makefile << "copy_inclues: \n";
+      makefile << "copy_includes: \n";
 
 #if defined(_WIN32) || defined(_WIN64)
       makefile << "\t@if not exist \"$(BUILDDIR)/external\" mkdir "
@@ -205,11 +201,11 @@ void generate_makefile(make_settings &settings, project &project) {
 #endif
       for (auto inc : project.includes) {
 #if defined(_WIN32) || defined(_WIN64)
-        makefile << "\t@xcopy /s /e /y /q /d /i  \"" << vcpkg_path
+        makefile << "\t@xcopy /s /e /y /q /d /i  \"" << vcpkg_path << "\\installed\\$(VCPKG_TARGET_TRIPLET)\\"
                  << "include\\" << inc << "\" \"$(BUILDDIR)\\external\\" << inc
                  << "\\\"\n";
 #else
-        makefile << "\t@cp -r \"" << vcpkg_path << "include/" << inc
+        makefile << "\t@cp -r \"" << vcpkg_path << "/installed/$(VCPKG_TARGET_TRIPLET)/include/" << inc
                  << "\" $(BUILDDIR)/external/" << inc << "\n";
 #endif
       }
