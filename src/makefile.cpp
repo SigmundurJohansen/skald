@@ -182,7 +182,7 @@ void generate_makefile(make_settings &settings, project &project) {
           // makefile << "\tcp \"" << vcpkg_path << "bin/" << dep << ".so\"
           // $(BUILDDIR)\n";
           makefile << "\t@cp \"" << vcpkg_path
-                   << "/installed/$(VCPKG_TARGET_TRIPLET)/lib/" << dep
+                   << "/installed/$(VCPKG_TARGET_TRIPLET)/lib/lib" << dep
                    << ".a\" $(BUILDDIR)/lib\n";
         }
 #endif
