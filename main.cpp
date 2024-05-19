@@ -7,7 +7,7 @@
 #include <filesystem>
 #include <iostream>
 
-const std::string version = "v1.1.0";
+const std::string version = "v1.1.1";
 
 int make_default_project() {
   int one = make_dependencies();
