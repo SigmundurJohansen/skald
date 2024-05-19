@@ -16,10 +16,10 @@ int make_dependencies() {
       std::cout << "vcpkg_path does not exist" << std::endl;
 #if defined(_WIN32) || defined(_WIN64)
       dependencies << "\t\"vcpkg_path\" : "
-                      "\"D:/tools/vcpkg/installed/x64-windows/\",\n";
+                      "\"D:/tools/vcpkg\",\n";
 #elif defined(__linux__)
       dependencies << "\t\"vcpkg_path\" : "
-                      "\"/home/sig/repo/vcpkg/installed/x64-linux/\",\n";
+                      "\"/home/sig/repo/vcpkg\",\n";
 #endif
     }
     dependencies << "\t\"dependencies\" : [\"fmt\"],\n"
