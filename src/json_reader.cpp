@@ -98,7 +98,7 @@ int get_dependencies(project &project) {
   yyjson_val *vcpkg_path_val = yyjson_obj_get(root, "vcpkg_path");
   if (vcpkg_path_val) {
     project.vcpkg_path = yyjson_get_str(vcpkg_path_val);
-     if (project.verbose)
+  if (project.verbose)
     std::cout << "vcpkg path: " << project.vcpkg_path << "\n";
   } else {
     std::cout << "The key 'vcpkg_path' does not exist.\n";

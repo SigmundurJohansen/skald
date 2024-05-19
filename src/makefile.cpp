@@ -24,28 +24,49 @@ void generate_makefile(make_settings &settings, project &project) {
     // Write the Makefile content
     makefile << "CXX:= " + settings.cpp_compiler + "\n";
     makefile << "CC:= " + settings.c_compiler + "\n\n";
-    makefile << "CFLAGS := -g \n"; // # Add your C specific flags here
-    makefile << "CXXFLAGS:=";
-    for (auto flag : settings.compiler_flags)
-      makefile << " " << flag;
-    makefile << " -I" << project.vcpkg_path << "include\n";
+
+    makefile << "VCPKG_ROOT = " << project.vcpkg_path << "\n";
+
+#if defined(_WIN32) || defined(_WIN64)
+    makefile << "VCPKG_TAGET_TRIPLET = x64-windows \n";
+#else
+    makefile << "VCPKG_TAGET_TRIPLET = x64-linux \n";
+#endif
+
+    makefile << "INCLUDES = -I$(VCPKG_ROOT)/installed/$(VCPKG_TARGET_TRIPLET)/include\n";
+    makefile << "LIBPATHS = -L$(VCPKG_ROOT)/installed/$(VCPKG_TARGET_TRIPLET)/lib\n";
+    makefile << "LIBS = ";
     if (!project.dependencies.empty()) {
-      makefile << "LDFLAGS := ";
-      makefile << " -L" << project.vcpkg_path << "lib";
       for (auto dep : project.dependencies)
         makefile << " -l" << dep;
     }
-    makefile << "\n\n";
+    
+    makefile << "\n";
+    makefile << "CFLAGS := -g $(INCLUDES) \n"; // # Add your C specific flags here
+    makefile << "CXXFLAGS:=";
+    for (auto flag : settings.compiler_flags)
+      makefile << " " << flag;
+
+    if (!project.dependencies.empty()) {
+      makefile << "LIBS = ";
+      if (!project.dependencies.empty()) {
+        for (auto dep : project.dependencies)
+          makefile << " -l" << dep;
+      }
+      makefile << "\n\n";
+      makefile << "LDFLAGS := $(LIBSPATHS) $(LIBS) \n";
+    }
 
     makefile << "TARGET=$(BUILDDIR)/" << project.project_name;
+
 #if defined(_WIN32) || defined(_WIN64)
     makefile << ".exe\n\n";
 #endif
-    {
+
       makefile << "\n";
       makefile << "BUILDDIR:= build";
       makefile << "\n\n";
-    }
+
     if (!project.c_files.empty()) {
       makefile << "C_SRCS:= $(wildcard " << project.c_files[0] << ")";
       for (unsigned int i = 1; i < project.c_files.size(); i++) {
@@ -54,9 +75,9 @@ void generate_makefile(make_settings &settings, project &project) {
         else
           makefile << "\t $(wildcard " << project.c_files[i] << ") \\\n";
       }
+      makefile << "\n\n";
     }
 
-    makefile << "\n\n";
     makefile << "CPP_SRCS := main.cpp \\\n";
     for (unsigned int i = 0; i < project.cpp_files.size(); i++) {
       if (i == project.cpp_files.size() - 1)
