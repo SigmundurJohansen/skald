@@ -40,12 +40,13 @@ void generate_makefile(make_settings &settings, project &project) {
       for (auto dep : project.dependencies)
         makefile << " -l" << dep;
     }
-    
+
     makefile << "\n";
     makefile << "CFLAGS := -g $(INCLUDES) \n"; // # Add your C specific flags here
     makefile << "CXXFLAGS:=";
     for (auto flag : settings.compiler_flags)
       makefile << " " << flag;
+    makefile << "\n";
 
     if (!project.dependencies.empty()) {
       makefile << "LIBS = ";
