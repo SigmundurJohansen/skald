@@ -3,7 +3,6 @@
 #include <fstream>
 #include <iostream>
 
-
 int make_dependencies() {
   std::ofstream dependencies("dependencies.json");
   if (dependencies.is_open()) {
@@ -39,6 +38,7 @@ int make_compiler_flags() {
   if (settings.is_open()) {
     settings << "{ \n";
     settings << "\t\"project_name\" : \"new_project\",\n"
+             << "\t\"compiler\": \"clang\",\"\n"
              << "\t\"compiler_flag\" : [";
     settings << "\"-g\",";
     settings << "\"-std=c++20\",";
