@@ -22,8 +22,7 @@ void get_project_files(project &project) {
       }
     }
   } catch (const std::filesystem::filesystem_error &e) {
-    std::cout << "Filesystem error: getting project files"
-              << "\n";
+    std::cout << "Filesystem error: getting project files\n";
   }
 }
 
@@ -48,8 +47,7 @@ void add_cpp_files(std::vector<std::string> &files, std::string path) {
       }
     }
   } catch (const std::filesystem::filesystem_error &e) {
-    std::cout << "Filesystem error, getting files"
-              << "\n";
+    std::cout << "Filesystem error, getting files\n";
   }
 }
 
@@ -66,8 +64,7 @@ void add_c_files(std::vector<std::string> &files, std::string path) {
       }
     }
   } catch (const std::filesystem::filesystem_error &e) {
-    std::cout << "Filesystem error, getting files"
-              << "\n";
+    std::cout << "Filesystem error, getting files" << "\n";
   }
 }
 
@@ -98,7 +95,8 @@ void get_source_files(project &project) {
   auto current_file_path = std::filesystem::current_path();
   std::string path = current_file_path.string();
   if (project.verbose) {
-    std::cout << "\n----------------------\nAdding folders...\n";
+    std::cout << "----------------------\n"
+              << "Adding folders...\n";
   }
   add_folders(project.folders, path);
   if (project.verbose)

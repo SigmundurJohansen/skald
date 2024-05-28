@@ -18,20 +18,6 @@ int make_default_project() {
 
 int main(int argc, char *argv[]) {
 
-#if defined(_WIN32) || defined(_WIN64)
-  std::cout << "Running on Windows\n";
-#elif defined(__linux__)
-  std::cout << "Running on Linux\n";
-#elif defined(__APPLE__) && defined(__MACH__)
-  std::cout << "Running on macOS\n";
-#elif defined(__unix__)
-  std::cout << "Running on a UNIX-like system\n";
-#elif defined(__FreeBSD__)
-  std::cout << "Running on FreeBSD\n";
-#else
-  std::cout << "Unknown platform\n";
-#endif
-
   make_settings make_settings;
   project project;
 
@@ -41,6 +27,12 @@ int main(int argc, char *argv[]) {
     // Check for various flags
     if (arg == "-v") {
       project.verbose = true;
+    } else if (arg == "-h") {
+      std::cout << "Available flags:\n"
+                << "\t-format\tadds default .clang-format file\n"
+                << "\t-default\tadds a template project with default values\n"
+                << "\t-v\tverbose, gives more info on skald's process\n";
+      return 0;
     } else if (arg == "-format") {
       return clang_format();
     } else if (arg == "-default") {
@@ -71,6 +63,20 @@ int main(int argc, char *argv[]) {
     file = file.substr(project.project_folder.size() + 1);
   }
   if (project.verbose) {
+
+#if defined(_WIN32) || defined(_WIN64)
+    std::cout << "Running on Windows\n";
+#elif defined(__linux__)
+    std::cout << "Running on Linux\n";
+#elif defined(__APPLE__) && defined(__MACH__)
+    std::cout << "Running on macOS\n";
+#elif defined(__unix__)
+    std::cout << "Running on a UNIX-like system\n";
+#elif defined(__FreeBSD__)
+    std::cout << "Running on FreeBSD\n";
+#else
+    std::cout << "Unknown platform\n";
+#endif
     std::cout << "----------------------\n";
     std::cout << "Listing project files: \n";
     int ret = 0;
