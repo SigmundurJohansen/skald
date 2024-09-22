@@ -6,11 +6,11 @@ docker build -t skald:latest .
 ### How to build
 step 1
  ```
-g++ --std=c++17 -o skald main.cpp src/file_system.cpp src/makefile.cpp external/yyjson.c src/json_reader.cpp src/default_project.cpp
+g++ --std=c++17 -o skald src/main.cpp src/file_system.cpp src/makefile.cpp external/yyjson.c src/json_reader.cpp src/default_project.cpp
  ```
 or
  ```
-clang++ --std=c++17 -o skald main.cpp src/file_system.cpp src/makefile.cpp external/yyjson.c src/json_reader.cpp src/default_project.cpp
+clang++ --std=c++17 -o skald src/main.cpp src/file_system.cpp src/makefile.cpp external/yyjson.c src/json_reader.cpp src/default_project.cpp
  ```
 step 2
  ```

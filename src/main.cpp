@@ -1,8 +1,8 @@
-#include "src/def.h"
-#include "src/default_project.h"
-#include "src/file_system.h"
-#include "src/json_reader.h"
-#include "src/makefile.h"
+#include "def.h"
+#include "default_project.h"
+#include "file_system.h"
+#include "json_reader.h"
+#include "makefile.h"
 #include <cstdlib>
 #include <filesystem>
 #include <iostream>

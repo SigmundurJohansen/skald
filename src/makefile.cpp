@@ -78,7 +78,7 @@ void generate_makefile(make_settings &settings, project &project) {
       makefile << "\n";
     }
 
-    makefile << "CPP_SRCS := main.cpp \\\n";
+    makefile << "CPP_SRCS := src/main.cpp \\\n";
     for (unsigned int i = 0; i < project.cpp_files.size(); i++) {
       if (i == project.cpp_files.size() - 1)
         makefile << "\t$(wildcard " << project.cpp_files[i] << ")\n";
@@ -128,12 +128,6 @@ void generate_makefile(make_settings &settings, project &project) {
     makefile << "\n\n";
 
     makefile << "$(BUILDDIR)/\%.o: \%.cpp\n";
-
-#if defined(_WIN32) || defined(_WIN64)
-    makefile << "\t@if not exist \"$(BUILDDIR)\" @mkdir $(@D)\n";
-#else
-    makefile << "\t@if [ ! -d \"$(BUILDDIR)\" ]; then mkdir -p $(@D); fi\n";
-#endif
 
     for (unsigned int i = 0; i < project.folders.size(); i++) {
 #if defined(_WIN32) || defined(_WIN64)

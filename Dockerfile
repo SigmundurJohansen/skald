@@ -4,8 +4,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     g++ \
     clang \
-    libmicrohttpd-dev \
-    && rm -rf /var/lib/apt/lists/*
+    libmicrohttpd-dev 
 
 WORKDIR /usr/skald
 COPY . .
